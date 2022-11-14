@@ -4,11 +4,19 @@ const app = express()
 const path = require('path')
 const { logger } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
+const cookieParser = require('cookie-parser')
+const cors = require('cors')
+const corsOptions = require('./config/corsOptions')
 const PORT = process.env.PORT || 3500
 
 app.use(logger)
+
+app.use(cors(corsOptions))
 //Adding built in middleware
 app.use(express.json())
+
+//3rd party middleware
+app.use(cookieParser())
 
 //Following line can also be written as: app.use(express.static('public'))
 app.use('/', express.static(path.join(__dirname, 'public')))
