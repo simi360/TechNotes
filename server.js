@@ -2,8 +2,15 @@ const express = require('express')
 const { sendFile } = require('express/lib/response')
 const app = express()
 const path = require('path')
+const { logger } = require('./middleware/logger')
+const errorHandler = require('./middleware/errorHandler')
 const PORT = process.env.PORT || 3500
 
+app.use(logger)
+//Adding built in middleware
+app.use(express.json())
+
+//Following line can also be written as: app.use(express.static('public'))
 app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/root'))
@@ -18,5 +25,7 @@ app.all('*', (req, res) => {
         res.type('txt').send('404 Not Found')
     }
 })
+
+app.use(errorHandler)
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
